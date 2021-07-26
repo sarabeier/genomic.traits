@@ -2,7 +2,7 @@
 
 ### by Sara Beier with support of Johannes Werner
 
-This file contains unix shell command lines and R scripts to compute genomic traits from the genome data for the example genome 2593339298 (Mameliella alba DSM 26384, [JGI/IMG platform](https://img.jgi.doe.gov/)) as well as phylogenetic signals from a list of genomic traits in reference genomes as used in the manuscript Beier et al, in prep, doi: !still missing!
+This file contains unix shell command lines and R scripts to compute genomic traits from the genome data for the example genome 2593339298 (Mameliella alba DSM 26384, [JGI/IMG platform](https://img.jgi.doe.gov/)) as well as phylogenetic signals from a list of genomic traits in reference genomes as used in the manuscript Beier et al, doi:  https://doi.org/10.1101/2021.07.23.453341
 
 ## Data accession
 
