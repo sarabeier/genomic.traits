@@ -3,7 +3,7 @@
 ### by Sara Beier with support of Johannes Werner
 
 This file contains unix shell command lines and R scripts to compute genomic traits as well as the species-level taxonomic affiliation based on the GTDB taxonomy or based on the average nucleotide identity
-from the genome data as given in Table S1 in the manuscript Beier et al, doi: https://doi.org/10.1101/2021.07.23.453341. The information in the folloing columns of Table S1 is provided via the JGI genome statistics (https://img.jgi.doe.gov/), : NCBI_genus, Cultured, Habitat, NCBI.Assembly.Accession,NCBI.Bioproject.Accession, NCBI.Biosample.Accession, NCBI.Taxon.ID, Genome.size, Gene.count, %GC, RRN_IMG, %HGT. Information in the remaining columns was obtained as detailed below.
+from the genome data as given in Table S1 in the manuscript Beier et al, doi: https://doi.org/10.3389/fmicb.2022.985216. The information in the folloing columns of Table S1 is provided via the JGI genome statistics (https://img.jgi.doe.gov/), : NCBI_genus, Cultured, Habitat, NCBI.Assembly.Accession,NCBI.Bioproject.Accession, NCBI.Biosample.Accession, NCBI.Taxon.ID, Genome.size, Gene.count, %GC, RRN_IMG, %HGT. Information in the remaining columns was obtained as detailed below.
 
 
 
@@ -27,7 +27,7 @@ Citation:
 * Stoddard, S. F., Smith, B. J., Hein, R., Roller, B. R. K., and Schmidt, T. M. (2015). rrnDB: improved tools for interpreting rRNA gene abundance in bacteria and archaea and a new foundation for future development. Nucleic Acids Res. 43, D593–D598. doi:10.1093/nar/gku1201.
 
 
-## Trait-based estimations of RRN and genome size
+## Read-based estimations of RRN and genome size
 RRN estimates given in the rrnDB as well as in the JGI/IMG platform are obtained from assembled genomes. The detection of RRN after genome assembly may however suffer from underestimations, because the 16s rRNA gene is highly conserved and multiple copies that are (nearly) identical may collapse into a single copy during assembly. This biases should be less important if estimating the full genome size (and other traits) from assembled data, as the 16s rRNA gene typically represents <0.5% of the whole genome and protein-coding genes are usually less concerved and accordingly less sensitive to assembly errors.
 
 An alternative assembly independent option to estimate RRN counts is to relate the number of reads encoding the 16s rRNA gene to the number of reads coding for obligatory single copy genes in a genome (Biers et al., 2009). Similarely, the genome size can be estimated by relating the total number of reads to the number of reads encoding obligatory signle copy genes in a genome (Nayfach and Pollard, 2015). 
@@ -43,7 +43,7 @@ do
 wget -qO- "https://www.ebi.ac.uk/ena/browser/api/xml/${line}" | grep -A1 "ENA-RUN" | sed '1d' | sed -e 's/^ *<ID>//' -e 's/<\/ID>//' | paste <(echo ${line}) -
 done >> bioproject_runid.txt
 ```
-The extracted SRR runids were used to download raw read files. To speed up the downstream analyses we used only the reverse run file for paired-end reads and all read files were subsamples to maximal 2.000.000 reads. Read files ending with *_consensus.fastq.gz or _subreads.fastq.gz were excluded, as these files result from sequencing methods producing long reads that may include more then one gene.
+The extracted SRR runids were used to download raw read files. To speed up the downstream analyses we used only the reverse run file for paired-end reads and all read files were subsamples to maximal 2.000.000 reads. Read files ending with *_consensus.fastq.gz or _subreads.fastq.gz were excluded, as these files result from sequencing methods producing long reads that may include more than one gene.
 
 ### Determination of reads encoding the 16s rRNA gene
 We used the SortMeRNA software (Kopylova et al., 2012) to identify reads encoding the 16s rRNA gene. Subsequently we counted the number of 16s encoding reads, all reads and determined the average read length within one sample.
@@ -135,8 +135,7 @@ Citations:
 
 ## Genome data accession
 
-The remaining genomic traits were computed based of sequence or annotation data provided for genomes via the the JGI/IMG platform, which can be downloaded  tar-compressed files.  
-The scripts below demontsrate trait computations for the example genome 2593339298 (Mameliella alba DSM 26384, [JGI/IMG platform](https://img.jgi.doe.gov/), 2593339298.tar.gz)
+The remaining genomic traits were computed based of sequence or annotation data provided for genomes via the the JGI/IMG platform, which can be downloaded as tar-compressed files. The scripts below demontsrate trait computations for the example genome 2593339298 (Mameliella alba DSM 26384, [JGI/IMG platform](https://img.jgi.doe.gov/), 2593339298.tar.gz)
 
 ```bash
 $ tar -xzvf 2593339298.tar.gz
@@ -146,7 +145,19 @@ $ ls 2593339298
 2593339298.fna          2593339298.gff             2593339298.ko.tab.txt    2593339298.tigrfam.tab.txt
 2593339298.genes.faa    2593339298.intergenic.fna  2593339298.pfam.tab.txt  2593339298.tmhmm.tab.txt
 ```
+## Genome richness and gene duplication
+This code returns the number of different gene orthologs within a genome (gene richness) and the averagy copy number of all gene orthologs within a genome (gene duplication). 
+Input file: JGI COG annotation table
+```R
+cog <- read.table(file="2593339298.cog.tab.txt", header =T, sep='\t', fill=T, stringsAsFactors = FALSE, quote = "")[,1:10]
+rich.cog <- length(table(cog$cog_id)[table(cog$cog_id)>0]) # Gene richness
+dup.cog <- mean(table(cog$cog_id)) # Gene duplication
 
+#rich.cog
+#1799
+#dup.cog
+#1.926626
+```
 
 ## Transcription factors (%TF)
 
@@ -197,7 +208,7 @@ $ echo $prophages
 Citation:  
 * Roux, S., Enault, F., Hurwitz, B.L., and Sullivan, M.B. (2015) VirSorter: mining viral signal from microbial genomic data. Peerj 3: e985.
 
-## Codon usage bias (CUB(F)) and Genetration time (Vieira-Silva)
+## Codon usage bias (CUB(F)) and Generation time (Vieira-Silva)
 
 This code returns the codon usage bias parameter F that was used in the Figures 3 and 4 for CUB, as well as the predicted generation time d.vs as detailed elsewhere (Vieira-Silva 2010)(see column 'Generation time (Vieira-Silva)' in Table S1). The parameter F is based on the earlier defined parameters &Delta;ENC' (Rocha 2004) and S (Sharp et al. 2005). Codon usage bias summary statistics were calculated in a shell script using the ENCprime software (https://github.com/jnovembre/ENCprime). Sequences coding for ribosomal proteins were extracted using the script extractFromFasta.pl (https://github.com/jonbra/NGS-Abel/blob/master/scripts/extractFromFasta.pl). Perl code available via the FAS center page (http://archive.sysbio.harvard.edu/CSB/resources/computational/scriptome/UNIX/) was used to reformat sequence files.
 The ENCprime output together with extracted ribosomal gene coding sequences were used as an input for an downstream R script, to return the variables F and d.vs.
@@ -346,7 +357,7 @@ Citations:
 * Pagès H, Aboyoun P, Gentleman R, DebRoy S (2020). Biostrings: Efficient manipulation of biological strings. R package version 2.58.0, https://bioconductor.org/packages/Biostrings.
 * Henrik Bengtsson (2021). matrixStats: Functions that Apply to Rows and Columns of Matrices (and to Vectors). R package version 0.58.0. https://CRAN.R-project.org/package=matrixStats
 
-## Speciel level taxonomic annotation
+## Species level taxonomic annotation
  
  Genome sequence data (e.g. 2593339298.fna) were copied into the directory genomes and annotated via the GTDB-Tk software (version 1.5.1, Chaumeil et al. 2019) with the following command to obtain GTDB taxonomy ([GTDB](https://gtdb.ecogenomic.org/)) annotations:
 
@@ -362,7 +373,7 @@ $ cd gtdb.out
 $ cat gtdbtk.ar122.summary.tsv gtdbtk.bac120.summary.tsv |sort -r | sed '1d'> gtdbtk.arcbac.summary.tab
 $ awk -F"\t" '{ print $1, $8,$2 }' OFS="\t" gtdbtk.arcbac.summary.tab |sed 's/classification/d__gtdb_division;p__gtdb_phylum;c__gtdb_class;o__gtdb_order;f__gtdb_family;g__gtdb_genus;s__gtdb_species/g' |sed 's/.__/\'$'\t''/g' |sed 's/;//g' |sed 's#N/A#NA#g' |cut -f1-2,4-10 >gtdb.arcbac.classification.tab
 ```
-Genoms that based on the GTDB taxonomic annotation could not be unambigously assigned to a single species level bin were subsequently binned at the species level via their avarage nucleotide identity (ANI) using reciprocal classifications via the FastANI software (version 1.32, Jain et al. 2018) followed by reformatting of the ouput file to assign species level bins with  ANI>94%.
+Genomes that based on the GTDB taxonomic annotation could not be unambiguously assigned to a single species level bin were subsequently binned at the species level via their average nucleotide identity (ANI) using reciprocal classifications via the FastANI software (version 1.32, Jain et al. 2018) followed by reformatting of the ouput file to assign species level bins with  ANI>94%.
 
 ```bash
 #obtain list with genomes that could not be unambigously assigned to a single species level bin:
@@ -440,6 +451,6 @@ $ head fastani.bins
 2651869522    fastani_species06
 ```
 Citations:  
-* Parks, D.H., et al. (2021)." GTDB: an ongoing census of bacterial and archaeal diversity through a phylogenetically consistent, rank normalized and complete genome-based taxonomy." Nucleic Acids Research
+* Parks, D.H., et al. (2022)." GTDB: an ongoing census of bacterial and archaeal diversity through a phylogenetically consistent, rank normalized and complete genome-based taxonomy." Nucleic Acids Research
 * Chaumeil, P.-A, et al. (2019). "GTDB-Tk: a toolkit to classify genomes with the Genome Taxonomy Database." Bioinformatics, btz848: https://doi.org/10.1093/bioinformatics/btz848. 
 * Jain, C., Rodriguez-R, L. M., Phillippy, A. M., Konstantinidis, K. T., and Aluru, S. (2018). High throughput ANI analysis of 90K prokaryotic genomes reveals clear species boundaries. Nat. Commun. 9, 5114. doi:10.1038/s41467-018-07641-9.

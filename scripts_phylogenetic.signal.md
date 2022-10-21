@@ -2,7 +2,7 @@
 
 ### by Sara Beier with support of Johannes Werner
 
-This file contains R scripts to compute phylogenetic signals and matel correlograms of genomic traits from the genomic traits values provided in Table S1 (Beier et al, doi: https://doi.org/10.1101/2021.07.23.453341), with the only exception of the 16s rRNA gene copy number (RRN). Due to detected biases of RRN values available via the [JGI/IMG platform](https://img.jgi.doe.gov/) (see Figure S3) we use in this case trait values and phylogeny of the the curated Ribosomal RNA Operon Copy Number Database ([rrnDB](https://rrndb.umms.med.umich.edu/)).
+This file contains R scripts to compute phylogenetic signals and matel correlograms of genomic traits from the genomic traits values provided in Table S1 (Beier et al, doi: https://doi.org/10.3389/fmicb.2022.985216), with the only exception of the 16s rRNA gene copy number (RRN). Due to detected biases of RRN values available via the [JGI/IMG platform](https://img.jgi.doe.gov/) (see Figure S3) we use in this case trait values and phylogeny of the the curated Ribosomal RNA Operon Copy Number Database ([rrnDB](https://rrndb.umms.med.umich.edu/)).
 
 
 ## rrnDB phylogeny
@@ -39,7 +39,7 @@ Citations:
 ## Phylogenetic signals
 
 The phylogenetic signal of each trait was assessed via Pagel's lambda (Pagel 1999) and Blomberg's K (Blomberg et al. 2003) statistics.  
-The traits 'Generation time' was for all downstream statistics  log(x) transformed and the trait %HGT was log(x+0.01) transformed. Visual inspection of the data  revealed a better fit to normal distribution after these transformation steps. It was not possible to apply transformations for the highly skewed distributions of the number of16s rRNA gene copies (RRN_rrnDB) or the number of prophages that would have resulted in a better fit to normal distribution. 
+The trait 'Generation time' was for all downstream statistics  log(x) transformed and the trait %HGT was log(x+0.01) transformed. Visual inspection of the data  revealed a better fit to normal distribution after these transformation steps. It was not possible to apply transformations for the highly skewed distributions of the number of16s rRNA gene copies (RRN_rrnDB) or the number of prophages that would have resulted in a better fit to normal distribution. 
 For all analyses except for the trait RRN, the phylogeny of the prokaryotic PICRUSt2 default phylogenetic tree (Douglas et a. 2020: pro_ref.tre) was used to infer phylogenetic signals of genomic traits among the PICRUSt2 reference genomes. To infer phylogenetic signals for RRN we used the trait table available viathe [rrnDB](https://rrndb.umms.med.umich.edu/)  and a phylogenetic tree that was computed from the corresponding 16s rRNA gene sequence data.
 
 ```R
@@ -83,7 +83,7 @@ Citations:
 
 ## Mantel correlograms
 
-We computed phylogenetic Mantel correlograms similar as detailed elsewhere (Diniz-Filho et al. 2010, Dini-Andreote et al. 2014) to test for significant positive correlations between phylogenetic distances and trait distances at the following phylogenetic distance classes: 0-0.25 / 0.25-0.5 / 0.5-0.75 / 0.75-1 / 1-1.5 / 1.5-2 / 2-2.5/ 2.5-3. The Mantel correlations were tested via the Spearman rank-order correlation as it was not possible to obtain normal distributed trait values in all cases. For the calculation of Mantel correlograms, the dataset was reduced to 10000 randomly selected genomes in order to reduce computation time and memory demand. The Mantel correlations were tested via the Spearman rank-order correlation as it was not possible to obtain normal distributed trait values in all cases. For the calculation of Mantel correlograms, the dataset was reduced to 10000 randomly selected genomes in order to reduce computation time and memory demand.
+We computed phylogenetic Mantel correlograms similar as detailed elsewhere (Diniz-Filho et al. 2010, Dini-Andreote et al. 2015) to test for significant positive correlations between phylogenetic distances and trait distances at the following phylogenetic distance classes: 0-0.25 / 0.25-0.5 / 0.5-0.75 / 0.75-1 / 1-1.5 / 1.5-2 / 2-2.5/ 2.5-3. For the calculation of Mantel correlograms, the dataset was reduced to 10000 randomly selected genomes in order to reduce computation time and memory demand. The Mantel correlations were tested via the Spearman rank-order correlation as it was not possible to obtain normal distributed trait values in all cases. 
 For all analyses except for the trait RRN, the phylogeny of the prokaryotic PICRUSt2 default phylogenetic tree (Douglas et a. 2020: pro_ref.tre) was used to infer phylogenetic signals of genomic traits among the PICRUSt2 reference genomes. To infer phylogenetic signals for RRN we used the trait table available via [rrnDB](https://rrndb.umms.med.umich.edu/) and a phylogenetic tree that was computed from the corresponding 16s rRNA gene sequence data.
 
 ```R
