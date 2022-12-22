@@ -150,7 +150,7 @@ res <- do.call(cbind.data.frame, man[c(6,2,4,5)])
 res$pd <- breaks[2:length(breaks)]
 res$trait <-colnames(gtraits[trait])
 res
-write.table(res, "mpm.2.tab",sep = '\t', row.names = FALSE) #save as mpm.2.tab, mpm.3.tab,... for gtraits[,2], gtraits[,3],...
+write.table(res, "mpm.2.tab",sep = '\t', row.names = FALSE) #save as mpm.2.tab, mpm.4.tab,... for gtraits[,2], gtraits[,4],...
 ```
 
 Citations:  
