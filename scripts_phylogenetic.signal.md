@@ -7,7 +7,7 @@ This file contains R scripts to compute phylogenetic signals and matel correlogr
 
 ## rrnDB phylogeny
 
-16s rRNA sequences (rrnDB-5.7_16S_rRNA.fasta) from entries stored in the [rrnDB](https://rrndb.umms.med.umich.edu/), Stoddard et al. 2015 were alligned after removing duplicate sequences using the MUSCLE software (version 3.8.1551, Edgar 2004). A phylogenetic tree was computed using the FastTree software  (version 2.1.10, Price et al. 2010).
+16s rRNA sequences (rrnDB-5.7_16S_rRNA.fasta) from entries stored in the [rrnDB](https://rrndb.umms.med.umich.edu/) (Stoddard et al. 2015) were alligned after removing duplicate sequences using the MUSCLE software (version 3.8.1551, Edgar 2004). A phylogenetic tree was computed using the FastTree software  (version 2.1.10, Price et al. 2010).
 
 ```bash
 # Change fasta to tab
@@ -48,7 +48,7 @@ library(phytools) #v0.7.20
 # Load data
 pic.tre <-read.newick("pro_ref.tre") #Prokaryote reference tree from the PICRUSt2 softaware
 rrn.tre <- read.newick ("rrndb_fasttree.format.tree") # rrnDB tree computed as detailed above
-gtraits <- read.table ("TableS1.2021.tsv", header=T, sep='\t', fill=T)[,c(2,18,20:21,23:24, 26:30)]
+gtraits <- read.table ("TableS1.tsv", header=T, sep='\t', fill=T)[,c(2,18,20:21,23:24, 26:30)]
 gtraits <-gtraits[gtraits$prophages<26 & gtraits$X.HGT <= 65,] #remove outlayers: prophages<26 and %HGT<=65
 rrnDBtraits <- read.csv ("rrnDB-5.7.tsv", sep='\t', header=T, fill=T)[-c(1:215),c(1,12)] #rrnDB trait table, exclude first rows, no sequence data available
 
@@ -94,7 +94,7 @@ library(mpmcorrelogram) #v0.1.4
 # Load data
 pic.tre <-read.newick("pro_ref.tre") #Prokaryote reference tree from the PICRUSt2 softaware
 rrn.tre <- read.newick ("rrndb_fasttree.format.tree") # rrnDB tree computed as detailed above
-gtraits <- read.table ("TableS1.2021.tsv", header=T, sep='\t', fill=T)[,c(2,18,20:21,23:24, 26:30)]
+gtraits <- read.table ("TableS1.tsv", header=T, sep='\t', fill=T)[,c(2,18,20:21,23:24, 26:30)]
 gtraits <-gtraits[gtraits$prophages<26 & gtraits$X.HGT <= 65,] #remove outlayers: prophages<26 and %HGT<=65
 
 rrnDBtraits <- read.csv ("rrnDB-5.7.tsv", sep='\t', header=T, fill=T)[-c(1:215),c(1,12)] #rrnDB trait table, exclude first rows, no sequence data available
